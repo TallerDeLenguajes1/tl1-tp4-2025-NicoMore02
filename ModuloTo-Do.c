@@ -24,6 +24,8 @@ Nodo *CrearLista (int id);
 //Funciones//
 void insertarLista(Nodo **lista, Nodo *nueva);
 void liberarlista(Nodo *lista);
+void moverTarea(Nodo **pendientes, Nodo **realizadas, int id);
+void listarTareas(Nodo *lista, char *tipo);
 
 int main(int argc, char const *argv[])
 {
@@ -47,7 +49,15 @@ int main(int argc, char const *argv[])
             Nodo *nueva = CrearLista(tareaID++);
             insertarLista(&pendientes, nueva);
             break;
-        
+        case 2:
+            printf("Ingrese el ID de la tarea realizada: ");
+            scanf("%d", &buscarID);
+            moverTarea(&pendientes, &realizadas, buscarID);
+            break;
+        case 3:
+            listarTareas(pendientes, "Pendiente");
+            listarTareas(realizadas, "Realizada");
+            break;
         default:
             break;
         }
@@ -77,6 +87,37 @@ void liberarlista(Nodo *lista) {
     
 }
 
+void moverTarea(Nodo **pendientes, Nodo **realizadas, int id){
+    Nodo *aux = *pendientes, *anterior = CrearListaVacia;
+    while (aux && aux->T.TareaID != id){
+        anterior = aux;
+        aux = aux->siguiente;
+    }
+    if (!aux)
+    {
+        printf("Tarea no encontrada en pendientes\n");
+    }
+
+    if (anterior)
+    {
+        anterior->siguiente = aux->siguiente;
+    } else {
+        *pendientes = aux->siguiente;
+
+    }
+    aux->siguiente = *realizadas;
+    *realizadas = aux;
+    
+}
+
+void listarTareas(Nodo *lista, char *tipo){
+    printf("Tarea %s:\n", tipo);
+    while (lista)
+    {
+        printf("Tarea: %s || duracion: %d || ID: %d", lista->T.Descripcion, lista->T.Duracion, lista->T.TareaID);
+    }
+    
+}
 
 //Definciones del nodo//
 Nodo * CrearListaVacia(){
